@@ -21,8 +21,6 @@ setup(
     
     install_requires=[
         "torch>=1.12",
-        "numpy>=1.19",
-        "flexinet>=0.0.3",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
