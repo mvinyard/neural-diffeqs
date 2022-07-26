@@ -129,7 +129,7 @@ def _neural_diffeq(
     else:
         sigma = _compose_nn_sequential(
             in_dim=in_dim,
-            out_dim=in_dim,
+            out_dim=out_dim,
             hidden_layer_nodes=sigma,
             activation_function=sigma_activation_function,
             dropout=dropout,
@@ -138,7 +138,7 @@ def _neural_diffeq(
 
     mu = _compose_nn_sequential(
         in_dim=in_dim,
-        out_dim=in_dim,
+        out_dim=out_dim,
         hidden_layer_nodes=mu,
         activation_function=mu_activation_function,
         dropout=dropout,
