@@ -7,11 +7,7 @@ __email__ = ", ".join(["vinyard@g.harvard.edu",])
 # import packages #
 # --------------- #
 import torch
-
-
-# import local dependencies #
-# ------------------------- #
-from ._compose_nn_sequential import _compose_nn_sequential
+import flexinet
 
 
 #### -------------------------------------------------------- ####
@@ -127,7 +123,7 @@ def _neural_diffeq(
         dropout = False
         
     else:
-        sigma = _compose_nn_sequential(
+        sigma = flexinet.models.compose_nn_sequential(
             in_dim=in_dim,
             out_dim=out_dim,
             hidden_layer_nodes=sigma,
@@ -136,7 +132,7 @@ def _neural_diffeq(
             dropout_probability=dropout_probability,
         )
 
-    mu = _compose_nn_sequential(
+    mu = flexinet.models.compose_nn_sequential(
         in_dim=in_dim,
         out_dim=out_dim,
         hidden_layer_nodes=mu,
