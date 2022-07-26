@@ -100,6 +100,12 @@ class NeuralDiffEq(torch.nn.Module):
             if self._sigma_potential:
                 self._sigma = _sigma_as_potential
                 _initialize_potential_param(self.sigma)
+    
+    def psi_mu(self, x):
+        return self.mu(x.requires_grad_())
+
+    def psi_sigma(self, x):
+        return self.sigma(x.requires_grad_())
             
     def f(self, t, y0):
         return self._mu(self.mu, y0)
