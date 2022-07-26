@@ -1,9 +1,10 @@
-# neural-diffeqs
-Instantiate neural differential equations
+# ![neural-diffeqs](/assets/neural-diffeqs.logo.svg)
 
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/neural_diffeqs.svg)](https://pypi.python.org/pypi/pydk/)
 [![PyPI version](https://badge.fury.io/py/neural_diffeqs.svg)](https://badge.fury.io/py/pydk)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+A PyTorch-based library for the instantiation of neural differential equations.
 
 ### Installation
 
