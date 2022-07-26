@@ -8,12 +8,12 @@ A PyTorch-based library for the instantiation of neural differential equations.
 
 ### Installation
 
-To install with [pip](https://pypi.org/project/neural-diffeqs/):
+To install with [**`pip`**](https://pypi.org/project/neural-diffeqs/):
 ```python
 pip install neural_diffeqs
 ```
 
-To install the development verison:
+To install the development version from GitHub:
 ```BASH
 git clone https://github.com/mvinyard/neural-diffeqs.git; cd ./neural-diffeqs
 pip install -e .
