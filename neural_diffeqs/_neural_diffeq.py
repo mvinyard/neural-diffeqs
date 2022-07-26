@@ -1,4 +1,5 @@
 
+
 __module_name__ = "_neural_diffeq.py"
 __author__ = ", ".join(["Michael E. Vinyard"])
 __email__ = ", ".join(["vinyard@g.harvard.edu",])
@@ -7,7 +8,36 @@ __email__ = ", ".join(["vinyard@g.harvard.edu",])
 # import packages #
 # --------------- #
 import torch
-import flexinet
+
+# import local dependencies #
+# ------------------------- #
+from ._compose_nn_sequential import _compose_nn_sequential
+
+
+#### -------------------------------------------------------- ####
+    
+def _potential(net, x):
+    return net(x.requires_grad_())
+
+def _neg_gradient(potential, y):
+    return torch.autograd.grad(
+        potential,
+        y.requires_grad_(),
+        torch.ones_like(potential),
+        create_graph=True,
+    )[0]
+
+
+def _neg_grad_of_potential(net, y):
+    return _neg_gradient(_potential(net, y), y)
+
+
+def _mu_as_potential(mu, y):
+    return _neg_grad_of_potential(mu, y)
+
+
+def _sigma_as_potential(sigma, y, brownian_size):
+    return _neg_grad_of_potential(sigma, y).view(y.shape[0], y.shape[1], brownian_size)
 
 
 #### -------------------------------------------------------- ####
@@ -24,56 +54,168 @@ def _sigma(sigma, y, brownian_size):
 #### -------------------------------------------------------- ####
 
 
+def _initialize_potential_param(net, init_value=None):
+    
+    potential_param = list(net.parameters())[-1].data
+    if not init_value:
+        potential_param = torch.zeros(potential_param.shape)
+    else:
+        potential_param = torch.full(potential_param.shape, init_value)
+        
+
+#### -------------------------------------------------------- ####
+
+
 class NeuralDiffEq(torch.nn.Module):
-
-    noise_type = "general"
-    sde_type = "ito"
-
-    def __init__(self, mu, sigma=False, brownian_size=1):
+    def __init__(
+        self,
+        mu_neural_net,
+        mu_potential=True,
+        mu_init_potential=None,
+        sigma_neural_net=False,
+        sigma_potential=False,
+        sigma_init_potential=None,
+        brownian_size=1,
+        noise_type="general",
+        sde_type="ito",
+    ):
         super(NeuralDiffEq, self).__init__()
-
-        self.mu = mu
-        self.sigma = sigma
+        
+        self._mu = _mu
+        self._sigma = _sigma
         self._brownian_size = brownian_size
-
+        self._mu_potential = mu_potential
+        self.noise_type = noise_type
+        self.sde_type = sde_type
+        self._sigma_potential = sigma_potential
+        
+        self.mu = mu_neural_net
+        self.sigma = sigma_neural_net
+        
+        if self._mu_potential:
+            self._mu = _mu_as_potential
+            _initialize_potential_param(self.mu)
+            
+        if self.sigma:
+            if self._sigma_potential:
+                self._sigma = _sigma_as_potential
+                _initialize_potential_param(self.sigma)
+            
     def f(self, t, y0):
-        return self.mu(y0)
+        return self._mu(self.mu, y0)
 
     def forward(self, t, y0):
-        return self.mu(y0)
+        return self._mu(self.mu, y0)
 
     def g(self, t, y0):
-        return _sigma(self.sigma, y0, self._brownian_size)
-    
-    
-#### -------------------------------------------------------- ####
-    
-    
+        return self._sigma(self.sigma, y0, self._brownian_size)
+
+    #### -------------------------------------------------------- ####
+
+
 def _neural_diffeq(
-    mu={1: [125, 125]},
-    sigma={1: [125, 125]},
-    in_dim=2,
-    out_dim=2,
+    mu_hidden={1: [400, 400]},
+    mu_in_dim=50,
+    mu_out_dim=50,
+    mu_potential=True,
+    mu_init_potential=None,
     mu_activation_function=torch.nn.Tanh(),
+    mu_dropout=0.2,
+    sigma_hidden={1: [400, 400]},
+    sigma_in_dim=50,
+    sigma_out_dim=50,
+    sigma_potential=False,
+    sigma_init_potential=None,
     sigma_activation_function=torch.nn.Tanh(),
-    dropout=True,
-    dropout_probability=0.5,
+    sigma_dropout=0.2,
     brownian_size=1,
+    noise_type="general",
+    sde_type="ito",
 ):
     """
-    Instantiate a neural differential equation.
+    Flexibly instantiate a neural differential equation.
 
     Parameters:
     -----------
-    in_dim
-        Dimension size of input state
+    mu_hidden
+        dictionary-style composition of hidden architecture of the mu (drift) neural network
+        type: dict
+        default: {1:[400,400]}
+        
+    mu_in_dim
+        Dimension size of the input state to the mu neural network.
         type: int
-        default: 2
+        default: 50
 
-    out_dim
-        Dimension size of input state
+    mu_out_dim
+        Dimension size of the output state to the mu neural network.
         type: int
-        default: 2
+        default: 50
+        
+    mu_potential
+        Boolean indicator that dictates whether the mu (drift) component / neural network should be treated
+        as a gradient potential function. In other words, the output parameter dimension of the mu
+        neural network = 1 and the gradient of the potential of this value is mapped back to the 
+        dimension of the input. This is the output when passed through `torchdiffeq.odeint` or `torchsde.sdeint`.
+        type: bool
+        default: True
+        
+    mu_init_potential
+        The value of the output parameter of the mu potential net. If None, torch.zeros([]) is used by default.
+        type: NoneType or float
+        default: None
+        
+    mu_activation_function
+        Torch activation function of the mu (drift) neural network
+        type: torch.nn.modules.activation
+        default: torch.nn.Tanh()
+        
+    mu_dropout
+        Boolean indicator to include dropout in the mu neural network architecture. If not
+        False, probability between 0 and 1 of node dropout for a given linear layer. If dropout is False,
+        no dropout filters are added to the neural network architecture.
+        type: bool or float
+        default: 0.2
+        
+    sigma_hidden
+        dictionary-style composition of hidden architecture of the sigma (diffusion) neural network
+        type: dict
+        default: {1:[400,400]}
+        
+    sigma_in_dim
+        Dimension size of the input state to the sigma neural network.
+        type: int
+        default: 50
+
+    sigma_out_dim
+        Dimension size of the output state to the sigma neural network.
+        type: int
+        default: 50
+        
+    sigma_potential
+        Boolean indicator that dictates whether the sigma component / neural network should be treated
+        as a gradient potential function. In other words, the output parameter dimension of the sigma
+        neural network = 1 and the gradient of the potential of this value is mapped back to the 
+        dimension of the input. This is the output when passed through `torchdiffeq.odeint` or `torchsde.sdeint`.
+        type: bool
+        default: True
+        
+    sigma_init_potential
+        The value of the output parameter of the sigma potential net. If None, torch.zeros([]) is used by default.
+        type: NoneType or float
+        default: None
+        
+    sigma_activation_function
+        Torch activation function of the sigma (diffusion) neural network
+        type: torch.nn.modules.activation
+        default: torch.nn.Tanh()
+        
+    sigma_dropout
+        Boolean indicator to include dropout in the sigma neural network architecture. If not
+        False, probability between 0 and 1 of node dropout for a given linear layer. If dropout is False,
+        no dropout filters are added to the neural network architecture.
+        type: bool or float
+        default: 0.2 
 
     mu
         dictionary-style composition of hidden architecture of the drift neural network
@@ -86,17 +228,14 @@ def _neural_diffeq(
         term (thereby composing an ODE instead of an SDE), set `sigma=False`.
         type: dict (or bool)
         default: {1: [125, 125]}
+
     
-    mu_activation_function
-        Torch activation function of the mu (drift) neural network
-        type: torch.nn.modules.activation
-        default: torch.nn.Tanh()
 
     sigma_activation_function
         Torch activation function of the sigma (diffusion) neural network
         type: torch.nn.modules.activation
         default: torch.nn.Tanh()
-    
+
     dropout
         Boolean indicator to include dropout in network architecture. If sigma is False, this
         argument is automatically adjusted to False.
@@ -104,10 +243,7 @@ def _neural_diffeq(
         default: True
 
     dropout_probability
-        Probability between 0 and 1 of node dropout for a given linear layer. If dropout is False,
-        this argument is null.
-        type: float
-        default: 0.5
+        
 
     brownian_size
         Dimension-wise complexity of the stochastic brownian noise.
@@ -119,26 +255,37 @@ def _neural_diffeq(
     NeuralDiffEq
     """
 
-    if not sigma:
-        dropout = False
-        
-    else:
-        sigma = flexinet.models.compose_nn_sequential(
-            in_dim=in_dim,
-            out_dim=out_dim,
-            hidden_layer_nodes=sigma,
+    if sigma_hidden:
+        if sigma_potential:
+            sigma_out_dim = 1
+        sigma = _compose_nn_sequential(
+            in_dim=sigma_in_dim,
+            out_dim=sigma_out_dim,
+            hidden_layer_nodes=sigma_hidden,
             activation_function=sigma_activation_function,
-            dropout=dropout,
-            dropout_probability=dropout_probability,
+            dropout=sigma_dropout,
         )
+    else:
+        sigma=False
 
-    mu = flexinet.models.compose_nn_sequential(
-        in_dim=in_dim,
-        out_dim=out_dim,
-        hidden_layer_nodes=mu,
+    if mu_potential:
+        mu_out_dim = 1
+    mu = _compose_nn_sequential(
+        in_dim=mu_in_dim,
+        out_dim=mu_out_dim,
+        hidden_layer_nodes=mu_hidden,
         activation_function=mu_activation_function,
-        dropout=dropout,
-        dropout_probability=dropout_probability,
+        dropout=mu_dropout,
     )
-
-    return NeuralDiffEq(mu=mu, sigma=sigma, brownian_size=brownian_size)
+    
+    return NeuralDiffEq(
+        mu_neural_net=mu,
+        mu_potential=mu_potential,
+        mu_init_potential=mu_init_potential,
+        sigma_neural_net=sigma,
+        sigma_potential=sigma_potential,
+        sigma_init_potential=sigma_init_potential,
+        brownian_size=brownian_size,        
+        noise_type=noise_type,
+        sde_type=sde_type,
+    )
