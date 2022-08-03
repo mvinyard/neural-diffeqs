@@ -248,7 +248,7 @@ def _neural_diffeq(
             out_dim=sigma_out_dim,
             hidden_layer_nodes=sigma_hidden,
             activation_function=sigma_activation_function,
-            dropout=sigma_dropout,
+            dropout_probability=sigma_dropout,
         )
     else:
         sigma=False
@@ -260,7 +260,7 @@ def _neural_diffeq(
         out_dim=mu_out_dim,
         hidden_layer_nodes=mu_hidden,
         activation_function=mu_activation_function,
-        dropout=mu_dropout,
+        dropout_probability=mu_dropout,
     )
     
     return NeuralDiffEq(
