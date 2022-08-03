@@ -144,7 +144,7 @@ def _neural_diffeq(
     Parameters:
     -----------
     mu_hidden
-        dictionary-style composition of hidden architecture of the mu (drift) neural network
+        dictionary-style composition of hidden architecture of the mu (drift) neural network. 
         type: dict
         default: {1:[400,400]}
         
@@ -175,16 +175,18 @@ def _neural_diffeq(
         Torch activation function of the mu (drift) neural network
         type: torch.nn.modules.activation
         default: torch.nn.Tanh()
-        
+       
     mu_dropout
-        Boolean indicator to include dropout in the mu neural network architecture. If not
-        False, probability between 0 and 1 of node dropout for a given linear layer. If dropout is False,
-        no dropout filters are added to the neural network architecture.
-        type: bool or float
+        Probability of dropout [0,1] in the mu neural network architecture. If not False or 0, a probability between 
+        0 and 1 of node dropout for a given linear layer. If False, no dropout filters are added to the mu neural
+        network architecture.
+        type: float or bool
         default: 0.2
         
     sigma_hidden
-        dictionary-style composition of hidden architecture of the sigma (diffusion) neural network
+        dictionary-style composition of hidden architecture of the sigma (diffusion) neural network. Also may
+        function as a boolean indicator to exclude a stochastic diffusion term. To negate stochastic
+        term (thereby composing an ODE instead of an SDE), set `sigma=False`.
         type: dict
         default: {1:[400,400]}
         
@@ -215,42 +217,19 @@ def _neural_diffeq(
         Torch activation function of the sigma (diffusion) neural network
         type: torch.nn.modules.activation
         default: torch.nn.Tanh()
-        
-    sigma_dropout
-        Boolean indicator to include dropout in the sigma neural network architecture. If not
-        False, probability between 0 and 1 of node dropout for a given linear layer. If dropout is False,
-        no dropout filters are added to the neural network architecture.
-        type: bool or float
-        default: 0.2 
-
-    mu
-        dictionary-style composition of hidden architecture of the drift neural network
-        type: dict
-        default: {1: [125, 125]}
-
-    sigma
-        dictionary-style composition of hidden architecture of the diffusion neural network. Also may
-        function as a boolean indicator to exclude a stochastic diffusion term. To negate stochastic
-        term (thereby composing an ODE instead of an SDE), set `sigma=False`.
-        type: dict (or bool)
-        default: {1: [125, 125]}
-
-    
 
     sigma_activation_function
         Torch activation function of the sigma (diffusion) neural network
         type: torch.nn.modules.activation
         default: torch.nn.Tanh()
 
-    dropout
-        Boolean indicator to include dropout in network architecture. If sigma is False, this
-        argument is automatically adjusted to False.
-        type: bool
-        default: True
-
-    dropout_probability
+    sigma_dropout
+        Probability of dropout [0,1] in the sigma neural network architecture. If not
+        False or 0, a probability between 0 and 1 of node dropout for a given linear layer. If False,
+        no dropout filters are added to the sigma neural network architecture.
+        type: float or bool
+        default: 0.2
         
-
     brownian_size
         Dimension-wise complexity of the stochastic brownian noise.
         type: int
