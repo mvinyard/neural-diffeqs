@@ -20,7 +20,7 @@ class _NeuralNetwork:
 
     def input_layer(self, in_dim, nodes):
 
-        self._nn_dict["input_layer"] = torch.nn.Linear(in_dim, nodes)
+        self._nn_dict["hidden_layer_0"] = torch.nn.Linear(in_dim, nodes)
 
     def activation_function(self, activation_function=torch.nn.LeakyReLU()):
 
@@ -61,7 +61,37 @@ def _compose_nn_sequential(
     dropout_probability=0.1,
 ):
 
-    """Compose a sequential linear torch neural network"""
+    """
+    Compose a sequential linear torch neural network
+    
+    Parameters:
+    -----------
+    in_dim
+        neural network input dimension. dimensionality of data passed to neural network.
+        default: 50
+        type: int
+        
+    out_dim
+        neural network out dimension
+        default: 50
+        type: int
+        
+    activation_function
+        default: torch.nn.Tanh()
+        type: torch.nn.modules.activation
+        
+    hidden_layer_nodes
+        dictionary describing the hidden layer architecture in addition to the first/input hidden layer.
+        Connecting node shapes are automatically adjusted from hidden_layer_0 (input) to the second layer
+        as well as the final hidden layer to the output dimension.
+        default: {1:[500,500], 2:[500,500]}
+        type: dict
+        
+    dropout_probability
+        probability of a dropout for the nodes in a given layer.
+        default: 0
+        type: float
+    """
 
     nn = _NeuralNetwork()
 
