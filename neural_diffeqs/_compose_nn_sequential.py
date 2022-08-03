@@ -57,7 +57,6 @@ def _compose_nn_sequential(
     out_dim=50,
     activation_function=torch.nn.Tanh(),
     hidden_layer_nodes={1: [500, 500], 2: [500, 500]},
-    dropout=True,
     dropout_probability=0.1,
 ):
 
@@ -102,12 +101,12 @@ def _compose_nn_sequential(
 
     for layer in hidden_layer_keys:
         layer_nodes = hidden_layer_nodes[layer]
-        if dropout:
+        if dropout_probability:
             nn.dropout(probability=dropout_probability)
         nn.hidden_layer(layer_nodes[0], layer_nodes[1])
         nn.activation_function(activation_function)
 
-    if dropout:
+    if dropout_probability:
         nn.dropout(probability=dropout_probability)
     nn.output_layer(out_dim=out_dim, nodes=hidden_layer_nodes[hidden_layer_keys[-1]][1])
 
