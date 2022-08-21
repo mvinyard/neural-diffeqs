@@ -7,7 +7,7 @@ import sys
 
 setup(
     name="neural-diffeqs",
-    version="0.0.31",
+    version="0.0.4",
     python_requires=">3.6.0",
     author="Michael E. Vinyard - Harvard University - Broad Institute of MIT and Harvard - Massachussetts General Hospital",
     author_email="mvinyard@broadinstitute.org",
@@ -21,6 +21,7 @@ setup(
     
     install_requires=[
         "torch>=1.12",
+        "torch-composer>=0.0.3",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

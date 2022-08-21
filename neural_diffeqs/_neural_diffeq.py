@@ -8,10 +8,7 @@ __email__ = ", ".join(["vinyard@g.harvard.edu",])
 # import packages #
 # --------------- #
 import torch
-
-# import local dependencies #
-# ------------------------- #
-from ._compose_nn_sequential import _compose_nn_sequential
+import torch_composer
 
 
 #### -------------------------------------------------------- ####
@@ -243,7 +240,7 @@ def _neural_diffeq(
     if sigma_hidden:
         if sigma_potential:
             sigma_out_dim = 1
-        sigma = _compose_nn_sequential(
+        sigma = torch_composer.nn.compose(
             in_dim=sigma_in_dim,
             out_dim=sigma_out_dim,
             hidden_layer_nodes=sigma_hidden,
@@ -255,7 +252,7 @@ def _neural_diffeq(
 
     if mu_potential:
         mu_out_dim = 1
-    mu = _compose_nn_sequential(
+    mu = torch_composer.nn.compose(
         in_dim=mu_in_dim,
         out_dim=mu_out_dim,
         hidden_layer_nodes=mu_hidden,
