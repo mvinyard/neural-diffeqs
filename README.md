@@ -74,5 +74,10 @@ There are several other parameters that are easily tweakable, including the comp
 
 For more examples, please see the notebooks in [**`./examples/`**](./examples/). For documentation related neural ODEs and **`torchdiffeq`**, see the [**`torchdiffeq`** repository](https://github.com/rtqichen/torchdiffeq). For documentation related to neural SDEs and **`torchsde`**, see the [**`torchsde`** repository](https://github.com/google-research/torchsde).
 
+## To-do
+* Integration of neural controlled differential equations ([neural CDEs](https://github.com/patrick-kidger/torchcde)).
+* Build SDE-GANs
+* Neural PDEs
+
 ---
 **Questions or suggestions**? Open an [issue](https://github.com/mvinyard/neural-diffeqs/issues/new) or send an email to [Michael Vinyard](mailto:mvinyard@broadinstitute.org).
