@@ -18,6 +18,8 @@ from ._base_ancilliary._base_support import define_forward_function
 # -- BaseODE: ----------------------------------------------------------------------------
 class BaseODE(BaseNDE):
     """Abstract class for BaseODE"""
+    """Abstract class for BaseODE. torchdiffeq.odeint requires `forward` method"""
+
 
     def __init__(self):
         super(BaseODE, self).__init__()
