@@ -1,5 +1,17 @@
 
+__module_name__ = "_base_support.py"
+__doc__ = """Functions to support the base classes."""
+__author__ = ", ".join(["Michael E. Vinyard"])
+__email__ = ", ".join(["mvinyard@broadinstitute.org"])
+
+
+# -- version: ----------------------------------------------------------------------------
+__version__ = "0.0.2"
+
+
+# -- import packages: --------------------------------------------------------------------
 import torch_composer
+
 
 # -- supporting base functions: ----------------------------------------------------------
 as_list = torch_composer._core.base.as_list

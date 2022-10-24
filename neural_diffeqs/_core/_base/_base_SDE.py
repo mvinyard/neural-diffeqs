@@ -17,8 +17,7 @@ from ._base_ancilliary._base_support import define_forward_function, parse_passe
 
 # -- BaseSDE: ----------------------------------------------------------------------------
 class BaseSDE(BaseNDE):
-    """Abstract class for BaseSDE"""
-
+    """Abstract class for BaseSDE. torchsde.sdeint requires f and g methods"""
     def __init__(self):
         super(BaseSDE, self).__init__()
 
