@@ -88,13 +88,16 @@ class ParseArgsKwargs:
     def specify_dropout(self, dropout=None, mu_dropout=None, sigma_dropout=None):
         self.__parse_argset__(argset=locals())
 
-    def potential_net(
-        self,
-        potential_net=None,
-        mu_potential_net=None,
-        sigma_potential_net=None,
-    ):
-        self.__parse_argset__(argset=locals())
+#     def potential_net(
+#         self,
+#         potential_net=None,
+#         mu_potential_net=None,
+#         sigma_potential_net=None,
+#     ):
+#         if any([mu_potential_net, sigma_potential_net]):
+#             potential_net = None
+        
+#         self.__parse_argset__(argset=locals())
 
     def in_bias(self, input_bias=None, mu_input_bias=None, sigma_input_bias=None):
         self.__parse_argset__(argset=locals())
@@ -108,7 +111,6 @@ def arg_manager(
     hidden,
     activation_function,
     dropout,
-    potential_net,
     input_bias,
     output_bias,
     **kwargs
@@ -134,7 +136,8 @@ def instantiate_mu_sigma_networks(
     hidden,
     activation_function,
     dropout,
-    potential_net,
+    mu_potential,
+    sigma_potential,
     input_bias,
     output_bias,
     **kwargs
@@ -162,7 +165,6 @@ def instantiate_mu_sigma_networks(
         hidden=hidden,
         activation_function=activation_function,
         dropout=dropout,
-        potential_net=potential_net,
         input_bias=input_bias,
         output_bias=output_bias,
         **kwargs
@@ -174,6 +176,7 @@ def instantiate_mu_sigma_networks(
         parse.mu_hidden,
         parse.mu_activation_function(),
         parse.mu_dropout,
+        mu_potential,
         parse.mu_input_bias,
         parse.mu_output_bias,
     )
@@ -184,6 +187,7 @@ def instantiate_mu_sigma_networks(
         parse.sigma_hidden,
         parse.sigma_activation_function(),
         parse.sigma_dropout,
+        sigma_potential,
         parse.sigma_input_bias,
         parse.sigma_output_bias,
     )

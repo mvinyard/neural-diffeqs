@@ -78,7 +78,7 @@ class NeuralODE(BaseODE):
             in_dim=state_size,
             out_dim=state_size,
             hidden=hidden,
-            activation_function=activation_function,
+            activation_function=activation_function(),
             potential_net=potential_net,
             dropout=dropout,
             input_bias=input_bias,
