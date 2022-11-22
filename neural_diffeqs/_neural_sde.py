@@ -1,39 +1,95 @@
 
-__module_name__ = "_NeuralSDE.py"
+__module_name__ = "_neural_sde.py"
 __doc__ = """Neural SDE module. Contains API-facing NeuralSDE class."""
 __author__ = ", ".join(["Michael E. Vinyard"])
-__email__ = ", ".join(["mvinyard@broadinstitute.org"])
-
-
-# -- version: ----------------------------------------------------------------------------
+__email__ = ", ".join(["vinyard@g.harvard.edu"])
 __version__ = "0.0.2"
 
 
 # -- import packages: --------------------------------------------------------------------
-import torch
+from torch_nets import TorchNet
 
 
-# -- import local dependencies: ----------------------------------------------------------
-from ._base import BaseSDE, instantiate_mu_sigma_networks
+from ._base._neural_diffeq import NeuralDiffEq
 
 
-# -- API-facing class: -------------------------------------------------------------------
-class NeuralSDE(BaseSDE):
+# -- configure potential function: -------------------------------------------------------
+class ConfigurePotential:
     def __init__(
         self,
-        state_size: int,
-        hidden: dict({int: [int, int], int: [int, int]}) = {1: [200, 200]},
-        activation_function: 'torch.nn.modules.activation.<func>' = torch.nn.Tanh,
-        dropout: float = 0,
-        input_bias: bool = True,
-        output_bias: bool = True,
-        brownian_size: int = 1,
-        potential_net: bool = False,
-        mu_init: float = None,
-        sigma_init: float = None,
+        state_size,
+        mu_potential,
+        sigma_potential,
+        mu_output_bias,
+        sigma_output_bias,
+    ):
+
+        self.__dict__.update(locals())
+
+    def init_state_size(self):
+        for net in ["mu", "sigma"]:
+            for io in ["in", "out"]:
+                attr = "{}_{}_features".format(net, io)
+                setattr(self, attr, self.state_size)
+
+    def update_state_size(self):
+        if self.mu_potential:
+            self.mu_out_features = 1
+        if self.sigma_potential:
+            self.sigma_out_features = 1
+
+    def update_output_bias(self):
+        if self.mu_potential:
+            self.mu_output_bias = False
+        if self.sigma_potential:
+            self.sigma_output_bias = False
+
+    def __call__(self):
+        self.init_state_size()
+        self.update_state_size()
+        self.update_output_bias()
+
+
+def configure_potential(
+    state_size,
+    mu_potential,
+    sigma_potential,
+    mu_output_bias,
+    sigma_output_bias,
+):
+    """ """
+    config_potential = ConfigurePotential(
+        state_size=state_size,
+        mu_potential=mu_potential,
+        sigma_potential=sigma_potential,
+        mu_output_bias=mu_output_bias,
+        sigma_output_bias=sigma_output_bias,
+    )
+    config_potential()
+
+    return config_potential
+
+
+# -- main class: -------------------------------------------------------------------------
+class NeuralSDE(NeuralDiffEq):
+    def __init__(
+        self,
+        state_size=50,
+        mu_hidden=[],
+        sigma_hidden=[],
+        mu_activation="LeakyReLU",
+        sigma_activation="LeakyReLU",
+        mu_dropout=0,
+        sigma_dropout=0,
+        mu_bias=True,
+        sigma_bias=True,
+        mu_output_bias=True,
+        sigma_output_bias=True,
+        mu_potential=False,
+        sigma_potential=False,
         noise_type: str = "general",
         sde_type: str = "ito",
-        **kwargs,
+        brownian_size=1,
     ):
         """
         Instantiate a NeuralSDE.
@@ -125,23 +181,40 @@ class NeuralSDE(BaseSDE):
         --------
         None
         """
-        self.__dict__.update(locals())
         super(NeuralSDE, self).__init__()
 
-        self.networks = instantiate_mu_sigma_networks(
-            state_size=state_size,
-            hidden=hidden,
-            activation_function=activation_function,
-            dropout=dropout,
-            potential_net=potential_net,
-            input_bias=input_bias,
-            output_bias=output_bias,
-            **kwargs,
+        config = configure_potential(
+            state_size,
+            mu_potential,
+            sigma_potential,
+            mu_output_bias,
+            sigma_output_bias,
         )
-        self.__setup__()
+        mu = TorchNet(
+            in_features=config.mu_in_features,
+            out_features=config.mu_out_features,
+            hidden=mu_hidden,
+            activation=mu_activation,
+            dropout=mu_dropout,
+            bias=mu_bias,
+            output_bias=config.mu_output_bias,
+        )
 
-    # -- drift: --------------------------------------------------------------------------
-    def f(self, t: torch.Tensor, y0: torch.Tensor)->torch.Tensor:
+        sigma = TorchNet(
+            in_features=config.sigma_in_features,
+            out_features=config.sigma_out_features,
+            hidden=sigma_hidden,
+            activation=sigma_activation,
+            dropout=sigma_dropout,
+            bias=sigma_bias,
+            output_bias=config.sigma_output_bias,
+        )
+        self.__setup__(kwargs=locals())
+
+    def _view_g_state(self, y):
+        return y.view(y.shape[0], y.shape[1], self.brownian_size)
+
+    def f(self, t, y0):
         """
         Drift method (term) of the NeuralSDE.
 
@@ -172,9 +245,8 @@ class NeuralSDE(BaseSDE):
         >>> x_hat_f = func.f(None, x)
         """
         return self.mu_forward(self.mu, y0)
-    
-    # -- diffusion: ----------------------------------------------------------------------
-    def g(self, t: torch.Tensor, y0: torch.Tensor)->torch.Tensor:
+
+    def g(self, t, y0):
         """
         Diffusion method (term) of the NeuralSDE.
 
@@ -204,5 +276,4 @@ class NeuralSDE(BaseSDE):
         >>> func = NeuralSDE(state_size)
         >>> x_hat_g = func.g(None, x)
         """
-        return self.view_g_state(self.sigma_forward(self.sigma, y0))
-
+        return self._view_g_state(self.sigma_forward(self.sigma, y0))

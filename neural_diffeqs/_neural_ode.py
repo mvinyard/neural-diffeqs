@@ -1,35 +1,32 @@
 
-__module_name__ = "_NeuralODE.py"
-__doc__ = """Neural SODE module. Contains API-facing NeuralODE class."""
+__module_name__ = "_neural_ode.py"
+__doc__ = """Neural ODE module. Contains API-facing NeuralODE class."""
 __author__ = ", ".join(["Michael E. Vinyard"])
-__email__ = ", ".join(["mvinyard@broadinstitute.org"])
-
-
-# -- version: ----------------------------------------------------------------------------
+__email__ = ", ".join(["vinyard@g.harvard.edu"])
 __version__ = "0.0.2"
 
 
 # -- import packages: --------------------------------------------------------------------
-import torch
-import torch_composer
+from torch_nets import TorchNet
+from typing import Union
 
 
 # -- import local dependencies: ----------------------------------------------------------
-from ._base import BaseODE
+from ._base._neural_diffeq import NeuralDiffEq
 
 
 # -- API-facing class: -------------------------------------------------------------------
-class NeuralODE(BaseODE):
-    """forward is a required method for torchdiffeq.odeint"""
+class NeuralODE(NeuralDiffEq):
+    """note: forward is a required method for torchdiffeq.odeint"""
     def __init__(
         self,
         state_size: int,
-        hidden: dict({int: [int, int], int: [int, int]}) = {1: [200, 200]},
-        activation_function: 'torch.nn.modules.activation.<func>' = torch.nn.Tanh,
-        potential_net: bool = False,
-        dropout: float = 0,
-        input_bias: bool = True,
+        hidden: list = [],
+        activation: str = "LeakyReLU",
+        dropout: Union[float, list] = 0,
+        bias: bool = True,
         output_bias: bool = True,
+        potential_net: bool = False,
     ):
         """
         Instantiate a NeuralODE.
@@ -70,22 +67,25 @@ class NeuralODE(BaseODE):
         
         Notes:
         ------
-
         """
+        
         super(NeuralODE, self).__init__()
-
-        self.mu = torch_composer.TorchNet(
-            in_dim=state_size,
-            out_dim=state_size,
+        
+        if potential_net:
+            out_features, output_bias = 1, False
+        else:
+            out_features = state_size
+        
+        self.mu = TorchNet(
+            in_features=state_size,
+            out_features=out_features,
             hidden=hidden,
-            activation_function=activation_function,
-            potential_net=potential_net,
+            activation=activation,
             dropout=dropout,
-            input_bias=input_bias,
+            bias=bias,
             output_bias=output_bias,
         )
-
-        self.__setup__()
+        self.__setup__(kwargs=locals())
 
     def forward(self, t, y0):
         """
