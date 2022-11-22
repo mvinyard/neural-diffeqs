@@ -21,7 +21,7 @@ setup(
     
     install_requires=[
         "torch>=1.12",
-        "torch-composer>=0.0.3",
+        "torch-nets>=0.0.1",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
