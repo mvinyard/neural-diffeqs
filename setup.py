@@ -1,11 +1,11 @@
 
-from setuptools import setup
+import setuptools
 import re
 import os
 import sys
 
 
-setup(
+setuptools.setup(
     name="neural-diffeqs",
     version="0.2.0rc",
     python_requires=">3.6.0",
@@ -15,13 +15,15 @@ setup(
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     description="neural differential equations",
-    packages=[
-        "neural_diffeqs"
-    ],
-    
+    packages=setuptools.find_packages(),
     install_requires=[
         "torch>=1.12",
+<<<<<<< HEAD
         "torch-nets>=0.0.1",
+=======
+        "torch-composer>=0.0.4rc",
+        "licorice_font",
+>>>>>>> dcfcbf1549269501b2e505289cb40145b9ccf357
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
