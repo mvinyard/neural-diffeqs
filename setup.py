@@ -18,12 +18,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "torch>=1.12",
-<<<<<<< HEAD
         "torch-nets>=0.0.1",
-=======
-        "torch-composer>=0.0.4rc",
-        "licorice_font",
->>>>>>> dcfcbf1549269501b2e505289cb40145b9ccf357
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
