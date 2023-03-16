@@ -7,7 +7,7 @@ import sys
 
 setuptools.setup(
     name="neural-diffeqs",
-    version="0.2.0rc",
+    version="0.2.1rc",
     python_requires=">3.6.0",
     author="Michael E. Vinyard - Harvard University - Broad Institute of MIT and Harvard - Massachussetts General Hospital",
     author_email="mvinyard@broadinstitute.org",
@@ -17,7 +17,8 @@ setuptools.setup(
     description="neural differential equations",
     packages=setuptools.find_packages(),
     install_requires=[
-        "torch>=1.12",
+        "numpy>=1.24",
+        "torch>=1.13",
         "torch-nets>=0.0.1",
     ],
     classifiers=[
