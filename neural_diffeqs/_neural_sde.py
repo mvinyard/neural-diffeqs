@@ -89,7 +89,9 @@ class NeuralSDE(NeuralDiffEq):
         sigma_potential=False,
         noise_type: str = "general",
         sde_type: str = "ito",
-        brownian_size=1,
+        brownian_size: int =1,
+        mu_scalar: float = 1,
+        sigma_scalar: float = 1,
     ):
         """
         Instantiate a NeuralSDE.
@@ -244,7 +246,7 @@ class NeuralSDE(NeuralDiffEq):
         >>> func = NeuralSDE(state_size)
         >>> x_hat_f = func.f(None, x)
         """
-        return self.mu_forward(self.mu, y0)
+        return self.mu_forward(self.mu, y0) * self.mu_scalar
 
     def g(self, t, y0):
         """
@@ -276,4 +278,4 @@ class NeuralSDE(NeuralDiffEq):
         >>> func = NeuralSDE(state_size)
         >>> x_hat_g = func.g(None, x)
         """
-        return self._view_g_state(self.sigma_forward(self.sigma, y0))
+        return self._view_g_state(self.sigma_forward(self.sigma, y0)) * self.sigma_scalar
