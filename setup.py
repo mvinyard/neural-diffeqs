@@ -17,8 +17,8 @@ setuptools.setup(
     description="neural differential equations",
     packages=setuptools.find_packages(),
     install_requires=[
-        "numpy>=1.24",
-        "torch>=1.13",
+        "numpy==1.22.4",
+        "torch==1.13",
         "torch-nets>=0.0.1",
     ],
     classifiers=[
