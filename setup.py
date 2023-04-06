@@ -14,7 +14,7 @@ setuptools.setup(
     url=None,
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    description="neural differential equations",
+    description="Neural differential equations made easy.",
     packages=setuptools.find_packages(),
     install_requires=[
         "numpy==1.22.4",
