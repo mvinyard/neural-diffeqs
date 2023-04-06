@@ -19,7 +19,7 @@ setuptools.setup(
     install_requires=[
         "numpy==1.22.4",
         "torch==1.13",
-        "torch-nets>=0.0.1",
+        "torch-nets>=0.0.2",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
