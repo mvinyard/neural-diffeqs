@@ -1,14 +1,13 @@
 
+import torch
 import ABCParse
 from abc import abstractmethod
-
 
 from ._base_neural_diffeq import BaseDiffEq
 from ._diffeq_config import DiffEqConfig
 
-
-class BaseSDE(BaseDiffEq):
-    DIFFEQ_TYPE = "SDE"
+class BaseODE(BaseDiffEq):
+    DIFFEQ_TYPE = "ODE"
 
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -27,17 +26,20 @@ class BaseSDE(BaseDiffEq):
 
         self._config_kwargs = ABCParse.function_kwargs(func=DiffEqConfig, kwargs=kwargs)
         configs = DiffEqConfig(**self._config_kwargs)
-
         self.mu = configs.mu
-        self.sigma = configs.sigma
 
     # -- required methods in child classes: ------------------------------------
     @abstractmethod
     def drift(self):
-        """Called by self.f"""
+        """Called by self.f and/or self.forward"""
         ...
+        
+    def forward(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+        return self.drift(y)
 
-    @abstractmethod
     def diffusion(self):
+        # keep for compatibility with torchsde.sdeint
         """Called by self.g"""
-        ...
+        return torch.zeros([y.shape[0], y.shape[1], self.brownian_dim])
+        
+    

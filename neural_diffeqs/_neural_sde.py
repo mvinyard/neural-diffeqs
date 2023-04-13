@@ -5,7 +5,7 @@ import ABCParse
 
 
 # -- import local dependencies: ------------------------------------------------
-from .core._base_neural_sde import BaseNeuralSDE
+from .core._base_neural_sde import BaseSDE
 
 
 # -- import standard libraries and define types: -------------------------------
@@ -14,7 +14,8 @@ NoneType = type(None)
 
 
 # -- Main operational class: ---------------------------------------------------
-class NeuralSDE(BaseNeuralSDE):
+class NeuralSDE(BaseSDE):
+    DIFFEQ_TYPE = "SDE"
     def __init__(
         self,
         state_size,

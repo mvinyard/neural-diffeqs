@@ -5,7 +5,7 @@ import ABCParse
 
 
 # -- import local dependencies: ------------------------------------------------
-from . import core
+from .core._base_neural_ode import BaseODE
 
 
 # -- import standard libraries and define types: -------------------------------
@@ -14,38 +14,33 @@ NoneType = type(None)
 
 
 # -- Main operational class: ---------------------------------------------------
-class PotentialSDE(core.BaseSDE):
-    DIFFEQ_TYPE = "SDE"
+class NeuralODE(BaseODE):
+    DIFFEQ_TYPE = "ODE"
     def __init__(
         self,
         state_size,
         mu_hidden: Union[List[int], int] = [2000, 2000],
-        sigma_hidden: Union[List[int], int] = [400, 400],
         mu_activation: Union[str, List[str]] = "LeakyReLU",
-        sigma_activation: Union[str, List[str]] = "LeakyReLU",
         mu_dropout: Union[float, List[float]] = 0.2,
-        sigma_dropout: Union[float, List[float]] = 0.2,
         mu_bias: bool = True,
-        sigma_bias: List[bool] = True,
         mu_output_bias: bool = True,
-        sigma_output_bias: bool = True,
         mu_n_augment: int = 0,
-        sigma_n_augment: int = 0,
         sde_type="ito",
         noise_type="general",
-        brownian_dim=1,
     ):
-        super().__init__()
+        sigma_hidden = []
+        sigma_output_bias = False
+        brownian_dim = 1
 
-        mu_potential = True
-        self.potential = core.Potential(state_size)
+        super().__init__()
 
         self.__config__(locals())
 
     def drift(self, y) -> torch.Tensor:
-        y = y.requires_grad_()
-        ψ = self.mu(y)
-        return self.potential.gradient(ψ, y)
+        return self.mu(y)
 
     def diffusion(self, y) -> torch.Tensor:
-        return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim)
+        return torch.zeros([y.shape[0], y.shape[1], self.brownian_dim])
+
+    def forward(self, t, y):
+        return self.mu(y)

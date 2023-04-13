@@ -14,5 +14,6 @@ from . import core
 
 
 # -- import modules: -----------------------------------------------------------
+from ._neural_ode import NeuralODE
 from ._neural_sde import NeuralSDE
 from ._potential_sde import PotentialSDE
