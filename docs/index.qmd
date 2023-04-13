@@ -1,0 +1,15 @@
+---
+title: "neural-diffeqs"
+---
+
+## Welcome!
+`neural-diffeqs` is a framework for [...].
+
+`neural-diffeqs` is a Python package designed to [ ... ].
+
+::: {.callout-note}
+Note that this project is currently under activate development.
+:::
+
+## News
+

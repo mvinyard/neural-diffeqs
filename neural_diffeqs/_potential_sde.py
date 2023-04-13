@@ -5,7 +5,7 @@ import ABCParse
 
 
 # -- import local dependencies: ------------------------------------------------
-from .core._base_neural_sde import BaseSDE
+from . import core
 
 
 # -- import standard libraries and define types: -------------------------------
@@ -14,7 +14,7 @@ NoneType = type(None)
 
 
 # -- Main operational class: ---------------------------------------------------
-class NeuralSDE(BaseSDE):
+class PotentialSDE(core.BaseSDE):
     DIFFEQ_TYPE = "SDE"
     def __init__(
         self,
@@ -39,10 +39,20 @@ class NeuralSDE(BaseSDE):
     ):
         super().__init__()
 
+        mu_potential = True
         self.__config__(locals())
+        
+    def _potential(self, y):
+        return self.mu(y)
 
-    def drift(self, y)->torch.Tensor:
-        return self.mu(y) * self.coef_drift
+    def _gradient(self, ψ, y):
+        """use-case: output is directly psi (from a potential network)"""
+        return torch.autograd.grad(ψ, y, torch.ones_like(ψ), create_graph=True)[0]
 
-    def diffusion(self, y)->torch.Tensor:
+    def drift(self, y) -> torch.Tensor:
+        y = y.requires_grad_()
+        ψ = self._potential(y)
+        return self._gradient(ψ, y) * self.coef_drift
+
+    def diffusion(self, y) -> torch.Tensor:
         return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim) * self.coef_diffusion
