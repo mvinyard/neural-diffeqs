@@ -4,14 +4,16 @@ import torch
 import ABCParse
 import torch_nets
 
+from ._potential import Potential
+
 
 # -- define types: -------
 from typing import Union, List, Any
 NoneType = type(None)
 
 
-# -- SDE class: --------------------------------------------------
-class NeuralSDE(torch.nn.Module, ABCParse.ABCParse):
+# -- SDE class: -----
+class PotentialNeuralSDE(torch.nn.Module, ABCParse.ABCParse):
     def __init__(
         self,
         state_size,
@@ -52,6 +54,8 @@ class NeuralSDE(torch.nn.Module, ABCParse.ABCParse):
             output_bias=self.sigma_output_bias,
         )
 
+        self.potential = Potential(self.mu.out_features)
+
     def f(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         """Should return the output of self.drift"""
         return self.mu(y)
@@ -59,3 +63,7 @@ class NeuralSDE(torch.nn.Module, ABCParse.ABCParse):
     def g(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         """Should return the output of self.diffusion"""
         return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim)
+
+    def h(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+        """Should return the output of self.prior_drift"""
+        return self.potential.gradient(self.mu(y))

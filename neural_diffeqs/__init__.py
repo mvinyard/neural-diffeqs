@@ -6,8 +6,12 @@ __email__ = ", ".join(["vinyard@g.harvard.edu"])
 
 
 # -- import modules: ---------------------------------------------------------------------
-from ._neural_ode import NeuralODE
+# from ._neural_ode import NeuralODE
+
+
+# from . import core
+
+
+from ._potential import Potential
 from ._neural_sde import NeuralSDE
-
-
-from . import core
+from ._potential_neural_sde import PotentialNeuralSDE
