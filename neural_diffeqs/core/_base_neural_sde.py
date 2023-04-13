@@ -3,7 +3,6 @@
 # -- import packages: ----------------------------------------------------------
 import torch
 import ABCParse
-import torch_nets
 
 
 # -- import standard libraries: ------------------------------------------------
@@ -11,7 +10,7 @@ from abc import abstractmethod
 
 
 # -- import local dependencies: ------------------------------------------------
-
+from ._diffeq_config import DiffEqConfig
 
 
 # -- Main operational class: ---------------------------------------------------
@@ -21,31 +20,19 @@ class BaseNeuralSDE(torch.nn.Module, ABCParse.ABCParse):
         
         """
         Must call self.__config__(locals()) in the __init__ of theinheriting
-        class. 
+        class.
+        
+        
         """
 
     def __config__(self, kwargs):
-        self.__parse__(kwargs=kwargs)
-
         """Sets up mu and sigma given params"""
-        self.mu = torch_nets.TorchNet(
-            in_features=self.state_size,
-            out_features=self.state_size,
-            hidden=self.mu_hidden,
-            activation=self.mu_activation,
-            dropout=self.mu_dropout,
-            bias=self.mu_bias,
-            output_bias=self.mu_output_bias,
-        )
-        self.sigma = torch_nets.TorchNet(
-            in_features=self.state_size,
-            out_features=self.state_size * self.brownian_dim,
-            hidden=self.sigma_hidden,
-            activation=self.sigma_activation,
-            dropout=self.sigma_dropout,
-            bias=self.sigma_bias,
-            output_bias=self.sigma_output_bias,
-        )
+        
+        self.__parse__(kwargs=kwargs)
+        
+        self._config_kwargs = ABCParse.function_kwargs(func = DiffEqConfig, kwargs=kwargs)
+        self.mu, self.sigma = DiffEqConfig(**self._config_kwargs)()
+
 
     # -- required methods in child classes: ------------------------------------
     @abstractmethod

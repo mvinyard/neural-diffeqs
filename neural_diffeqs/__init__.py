@@ -10,12 +10,9 @@ __version__ = "0.2.2rc"
 # from ._neural_ode import NeuralODE
 
 # -- import subpackages: -------------------------------------------------------
-from . import core, models
+from . import core
 
 
 # -- import modules: -----------------------------------------------------------
-from .models import NeuralSDE, AugmentedNeuralSDE
-from .core import base_models
-
-# from ._potential import Potential
-# from ._potential_neural_sde import PotentialNeuralSDE
+from ._neural_sde import NeuralSDE
+from ._potential_sde import PotentialSDE

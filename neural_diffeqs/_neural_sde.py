@@ -2,11 +2,10 @@
 # -- import packages: ----------------------------------------------------------
 import torch
 import ABCParse
-import torch_nets
 
 
 # -- import local dependencies: ------------------------------------------------
-from ..core.base_models._base_neural_sde import BaseNeuralSDE
+from .core._base_neural_sde import BaseNeuralSDE
 
 
 # -- import standard libraries and define types: -------------------------------
@@ -29,6 +28,8 @@ class NeuralSDE(BaseNeuralSDE):
         sigma_bias: List[bool] = True,
         mu_output_bias: bool = True,
         sigma_output_bias: bool = True,
+        mu_n_augment: int = 0,
+        sigma_n_augment: int = 0,
         sde_type="ito",
         noise_type="general",
         brownian_dim=1,
