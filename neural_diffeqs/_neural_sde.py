@@ -34,8 +34,8 @@ class NeuralSDE(BaseSDE):
         sde_type="ito",
         noise_type="general",
         brownian_dim=1,
-        coef_drift=1,
-        coef_diffusion=1,
+        coef_drift: float = 1.,
+        coef_diffusion: float = 1.,
     ):
         super().__init__()
 

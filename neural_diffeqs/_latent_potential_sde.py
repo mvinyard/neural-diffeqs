@@ -35,6 +35,9 @@ class LatentPotentialSDE(core.BaseLatentSDE):
         sde_type="ito",
         noise_type="general",
         brownian_dim=1,
+        coef_drift: float = 1.,
+        coef_diffusion: float = 1.,
+        coef_prior_drift: float = 1.,
     ):
         super().__init__()
 
@@ -44,10 +47,10 @@ class LatentPotentialSDE(core.BaseLatentSDE):
         self.potential = core.Potential(state_size)
 
     def drift(self, y) -> torch.Tensor:
-        return self.mu(y)
+        return self.mu(y) * self.coef_drift
 
     def prior_drift(self, y) -> torch.Tensor:
-        return self.potential.potential_gradient(y)
+        return self.potential.potential_gradient(y) * self.coef_prior_drift
 
     def diffusion(self, y) -> torch.Tensor:
-        return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim)
+        return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim) * self.coef_diffusion
