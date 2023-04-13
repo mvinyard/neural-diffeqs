@@ -1,2 +1,3 @@
+from . import base_models
 
-from . import utils
+from ._potential import Potential
