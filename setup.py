@@ -7,7 +7,7 @@ import sys
 
 setuptools.setup(
     name="neural-diffeqs",
-    version="0.2.2rc",
+    version="0.3.rc0",
     python_requires=">3.7.0",
     author="Michael E. Vinyard",
     author_email="mvinyard@broadinstitute.org",
@@ -19,7 +19,8 @@ setuptools.setup(
     install_requires=[
         "numpy==1.22.4",
         "torch>=2.0.0",
-        "torch-nets>=0.0.3",
+        "torch-nets>=0.0.4",
+        "torchsde>=0.2.5",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

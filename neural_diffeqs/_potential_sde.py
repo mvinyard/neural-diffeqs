@@ -38,14 +38,19 @@ class PotentialSDE(core.BaseSDE):
         super().__init__()
 
         mu_potential = True
-        self.potential = core.Potential(state_size)
-
         self.__config__(locals())
+        
+    def _potential(self, y):
+        return self.mu(y)
+
+    def _gradient(self, ψ, y):
+        """use-case: output is directly psi (from a potential network)"""
+        return torch.autograd.grad(ψ, y, torch.ones_like(ψ), create_graph=True)[0]
 
     def drift(self, y) -> torch.Tensor:
         y = y.requires_grad_()
-        ψ = self.mu(y)
-        return self.potential.gradient(ψ, y)
+        ψ = self._potential(y)
+        return self._gradient(ψ, y)
 
     def diffusion(self, y) -> torch.Tensor:
         return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim)

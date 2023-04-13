@@ -3,10 +3,12 @@ import torch
 import ABCParse
 from abc import abstractmethod
 
+
 from ._base_neural_diffeq import BaseDiffEq
 from ._diffeq_config import DiffEqConfig
 
-class BaseODE(BaseDiffEq):
+
+class BaseLatentODE(BaseDiffEq):
     DIFFEQ_TYPE = "ODE"
 
     def __init__(self, *args, **kwargs):
@@ -15,7 +17,6 @@ class BaseODE(BaseDiffEq):
         """
         Must call self.__config__(locals()) in the __init__ of theinheriting
         class.
-        
         
         """
 
@@ -31,15 +32,19 @@ class BaseODE(BaseDiffEq):
     # -- required methods in child classes: ------------------------------------
     @abstractmethod
     def drift(self):
-        """Called by self.f and/or self.forward"""
+        """Called by self.f"""
         ...
-        
-    def forward(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
-        return self.drift(y)
-
+    
     def diffusion(self, y):
         # keep for compatibility with torchsde.sdeint
         """Called by self.g"""
         return torch.zeros([y.shape[0], y.shape[1], self.brownian_dim])
-        
     
+    @abstractmethod
+    def prior_drift(self):
+        """Called by self.h"""
+        ...
+
+    def h(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+        """Should return the output of self.diffusion"""
+        return self.prior_drift(y)

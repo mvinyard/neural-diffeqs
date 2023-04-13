@@ -3,11 +3,13 @@ import torch
 import ABCParse
 from abc import abstractmethod
 
+
 from ._base_neural_diffeq import BaseDiffEq
 from ._diffeq_config import DiffEqConfig
 
-class BaseODE(BaseDiffEq):
-    DIFFEQ_TYPE = "ODE"
+
+class BaseLatentSDE(BaseDiffEq):
+    DIFFEQ_TYPE = "SDE"
 
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -26,20 +28,26 @@ class BaseODE(BaseDiffEq):
 
         self._config_kwargs = ABCParse.function_kwargs(func=DiffEqConfig, kwargs=kwargs)
         configs = DiffEqConfig(**self._config_kwargs)
+
         self.mu = configs.mu
+        self.sigma = configs.sigma
 
     # -- required methods in child classes: ------------------------------------
     @abstractmethod
     def drift(self):
-        """Called by self.f and/or self.forward"""
+        """Called by self.f"""
+        ...
+
+    @abstractmethod
+    def diffusion(self):
+        """Called by self.g"""
         ...
         
-    def forward(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
-        return self.drift(y)
-
-    def diffusion(self, y):
-        # keep for compatibility with torchsde.sdeint
-        """Called by self.g"""
-        return torch.zeros([y.shape[0], y.shape[1], self.brownian_dim])
+    @abstractmethod
+    def prior_drift(self):
+        """Called by self.h"""
+        ...
         
-    
+    def h(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+        """Should return the output of self.diffusion"""
+        return self.prior_drift(y)

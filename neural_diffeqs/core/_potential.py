@@ -30,3 +30,6 @@ class Potential(torch.nn.Sequential):
         """in this use-case, y is likely the output of a neural network"""
         y = y.requires_grad_()
         return self.gradient(self.psi(y), y)
+    
+    def __call__(self, y:torch.Tensor)->torch.Tensor:
+        return self.psi(y.requires_grad_())
