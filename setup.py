@@ -7,8 +7,8 @@ import sys
 
 setuptools.setup(
     name="neural-diffeqs",
-    version="0.3.0rc0",
-    python_requires=">3.7.0",
+    version="0.3.0",
+    python_requires=">3.9.0",
     author="Michael E. Vinyard",
     author_email="mvinyard@broadinstitute.org",
     url=None,
@@ -24,7 +24,7 @@ setuptools.setup(
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.9",
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
     ],
