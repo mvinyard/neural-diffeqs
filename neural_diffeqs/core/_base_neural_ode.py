@@ -27,6 +27,9 @@ class BaseODE(BaseDiffEq):
         self._config_kwargs = ABCParse.function_kwargs(func=DiffEqConfig, kwargs=kwargs)
         configs = DiffEqConfig(**self._config_kwargs)
         self.mu = configs.mu
+    @property
+    def device(self):
+        return list(self.parameters())[0].device
 
     # -- required methods in child classes: ------------------------------------
     @abstractmethod
@@ -40,6 +43,6 @@ class BaseODE(BaseDiffEq):
     def diffusion(self, y):
         # keep for compatibility with torchsde.sdeint
         """Called by self.g"""
-        return torch.zeros([y.shape[0], y.shape[1], self.brownian_dim])
+        return torch.zeros([y.shape[0], y.shape[1], self.brownian_dim], device=self.device)
         
     
