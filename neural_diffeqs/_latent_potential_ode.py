@@ -19,7 +19,9 @@ class LatentPotentialODE(core.BaseLatentODE):
 
     def __init__(
         self,
-        state_size,
+        state_size: int,
+        coef_diff: float = 0,
+        dt: float = 0.1,
         mu_hidden: Union[List[int], int] = [2000, 2000],
         mu_activation: Union[str, List[str]] = "LeakyReLU",
         mu_dropout: Union[float, List[float]] = 0.2,

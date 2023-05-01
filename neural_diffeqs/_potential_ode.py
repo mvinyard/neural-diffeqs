@@ -23,6 +23,8 @@ class PotentialODE(BaseODE):
     def __init__(
         self,
         state_size,
+        dt: float = 0.1,
+        coef_diff: float = 0,
         mu_hidden: Union[List[int], int] = [2000, 2000],
         mu_activation: Union[str, List[str]] = "LeakyReLU",
         mu_dropout: Union[float, List[float]] = 0.2,
@@ -47,6 +49,3 @@ class PotentialODE(BaseODE):
         y = y.requires_grad_()
         ψ = self._potential(y)
         return self._gradient(ψ, y)
-
-    def diffusion(self, y) -> torch.Tensor:
-        return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim)
