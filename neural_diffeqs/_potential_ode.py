@@ -47,6 +47,3 @@ class PotentialODE(BaseODE):
         y = y.requires_grad_()
         ψ = self._potential(y)
         return self._gradient(ψ, y)
-
-    def diffusion(self, y) -> torch.Tensor:
-        return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim)
