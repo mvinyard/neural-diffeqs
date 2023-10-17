@@ -20,10 +20,8 @@ class BaseDiffEq(torch.nn.Module, ABCParse.ABCParse):
         super().__init__()
         
         """
-        Must call self.__config__(locals()) in the __init__ of theinheriting
-        class.
-        
-        
+        Must call self.__config__(locals()) in the __init__ of the inheriting
+        class.        
         """
 
     # -- required methods in child classes: ------------------------------------

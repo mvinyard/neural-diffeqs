@@ -26,7 +26,7 @@ class BaseODE(BaseDiffEq):
     def __config__(self, kwargs, private: List[str] = ["coef_diff", "dt"]):
         """Sets up mu and sigma given params"""
 
-        self.__parse__(kwargs=kwargs, private=private)
+        self.__parse__(kwargs=kwargs, private=private, public = ['noise_type', 'sde_type'])
 
         self._config_kwargs = ABCParse.function_kwargs(func=DiffEqConfig, kwargs=kwargs)
         configs = DiffEqConfig(**self._config_kwargs)

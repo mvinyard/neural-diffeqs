@@ -23,7 +23,7 @@ class BaseSDE(BaseDiffEq):
     def __config__(self, kwargs):
         """Sets up mu and sigma given params"""
 
-        self.__parse__(kwargs=kwargs)
+        self.__parse__(kwargs=kwargs, public = ['noise_type', 'sde_type'])
 
         self._config_kwargs = ABCParse.function_kwargs(func=DiffEqConfig, kwargs=kwargs)
         configs = DiffEqConfig(**self._config_kwargs)

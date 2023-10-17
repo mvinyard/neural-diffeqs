@@ -52,7 +52,7 @@ class PotentialSDE(core.BaseSDE):
     def drift(self, y) -> torch.Tensor:
         y = y.requires_grad_()
         ψ = self._potential(y)
-        return self._gradient(ψ, y) * self.coef_drift
+        return self._gradient(ψ, y) * self._coef_drift
 
     def diffusion(self, y) -> torch.Tensor:
-        return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim) * self.coef_diffusion
+        return self.sigma(y).view(y.shape[0], y.shape[1], self._brownian_dim) * self._coef_diffusion

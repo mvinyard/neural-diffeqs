@@ -7,7 +7,7 @@ import sys
 
 setuptools.setup(
     name="neural-diffeqs",
-    version="0.3.1rc0",
+    version="0.3.2rc0",
     python_requires=">3.9.0",
     author="Michael E. Vinyard",
     author_email="mvinyard@broadinstitute.org",
