@@ -19,8 +19,8 @@ class BaseODE(BaseDiffEq):
             "dt"
             "coef_diff"
         
-        Must call self.__config__(locals()) in the __init__ of theinheriting
-        class.        
+        Must call self.__config__(locals()) in the __init__
+        of the inheriting class.        
         """
 
     def __config__(self, kwargs, private: List[str] = ["coef_diff", "dt"]):
@@ -38,7 +38,7 @@ class BaseODE(BaseDiffEq):
         return torch.sqrt(torch.Tensor([self._dt]).to(self.device))
 
     def _sigma(self, y):
-        return torch.randn([y.shape[0], y.shape[1], self.brownian_dim], device=self.device)
+        return torch.randn([y.shape[0], y.shape[1], self._brownian_dim], device=self.device)
     
     @property
     def device(self):

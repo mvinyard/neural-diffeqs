@@ -18,7 +18,7 @@ class PotentialODE(BaseODE):
     DIFFEQ_TYPE = "ODE"
     sde_type = "ito"
     noise_type = "general"
-    brownian_dim = 1
+    _brownian_dim = 1
         
     def __init__(
         self,

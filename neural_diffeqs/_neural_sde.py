@@ -42,7 +42,7 @@ class NeuralSDE(BaseSDE):
         self.__config__(locals())
 
     def drift(self, y)->torch.Tensor:
-        return self.mu(y) * self.coef_drift
+        return self.mu(y) * self._coef_drift
 
     def diffusion(self, y)->torch.Tensor:
-        return self.sigma(y).view(y.shape[0], y.shape[1], self.brownian_dim) * self.coef_diffusion
+        return self.sigma(y).view(y.shape[0], y.shape[1], self._brownian_dim) * self._coef_diffusion
