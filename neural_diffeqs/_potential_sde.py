@@ -15,6 +15,7 @@ NoneType = type(None)
 
 # -- Main operational class: ---------------------------------------------------
 class PotentialSDE(core.BaseSDE):
+    """PotentialSDE, subclass of core.BaseSDE"""
     DIFFEQ_TYPE = "SDE"
     def __init__(
         self,
@@ -43,6 +44,7 @@ class PotentialSDE(core.BaseSDE):
         self.__config__(locals())
         
     def _potential(self, y):
+        y = y.requires_grad_()
         return self.mu(y)
 
     def _gradient(self, ψ, y):
