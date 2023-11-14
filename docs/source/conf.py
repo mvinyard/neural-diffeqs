@@ -40,20 +40,36 @@ extensions = [
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+html_context = dict(
+    github_user="mvinyard",   # Username
+    github_repo="neural-diffeqs",   # Repo name
+    github_version="main",  # Version
+    doc_path="docs/",  # Path in the checkout to the docs root
+)
+
+# Set link name generated in the top bar.
+html_title = "neural-diffeqs"
+html_logo = "../../assets/neural_diffeqs.logo.png"
+html_favicon = "../../assets/neural_diffeqs.favicon.png"
+html_theme_options = {
+    "github_url": "https://github.com/mvinyard/neural-diffeqs",
+    "twitter_url": "https://twitter.com/vinyard_m",
+}
+
+
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
 
-# -- Options for HTML output -------------------------------------------------
+# -- Options for HTML output --------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = 'sphinx_rtd_theme'
+html_show_sourcelink = True
+html_theme = 'pydata_sphinx_theme'
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+"""
+Add paths to css files (e.g., style sheet), below. Such files are copied
+after the builtin static files, thus a new file named default.css would
+overwrite the builtin default.css.
+"""
