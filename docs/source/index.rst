@@ -28,7 +28,7 @@
 
 
 
-.. grid:: 2
+.. grid:: 4
     :gutter: 1
 
     .. grid-item-card::    
@@ -57,10 +57,6 @@
           <embed><div><br></br><br></br></div></embed>
 
        :octicon:`desktop-download;2em;sd-text-dark`
-       
-
-.. grid:: 2
-    :gutter: 1
     
     .. grid-item-card::
        :link: api.rst
