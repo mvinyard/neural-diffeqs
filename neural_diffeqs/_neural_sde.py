@@ -1,32 +1,32 @@
 
-# -- import packages: ----------------------------------------------------------
+# -- import packages: ---------------------------------------------------------
 import torch
 import ABCParse
 
 
-# -- import local dependencies: ------------------------------------------------
+# -- import local dependencies: -----------------------------------------------
 from .core._base_neural_sde import BaseSDE
 
 
-# -- import standard libraries and define types: -------------------------------
+# -- import standard libraries and define types: ------------------------------
 from typing import Union, List, Any
-NoneType = type(None)
 
 
-# -- Main operational class: ---------------------------------------------------
+# -- Main operational class: --------------------------------------------------
 class NeuralSDE(BaseSDE):
     DIFFEQ_TYPE = "SDE"
+    """NeuralSDE - a neural differential equation."""
     def __init__(
         self,
         state_size: int,
-        mu_hidden: Union[List[int], int] = [2000, 2000],
-        sigma_hidden: Union[List[int], int] = [400, 400],
+        mu_hidden: Union[List[int], int] = [512, 512],
+        sigma_hidden: Union[List[int], int] = [32, 32],
         mu_activation: Union[str, List[str]] = "LeakyReLU",
         sigma_activation: Union[str, List[str]] = "LeakyReLU",
-        mu_dropout: Union[float, List[float]] = 0.2,
-        sigma_dropout: Union[float, List[float]] = 0.2,
-        mu_bias: bool = True,
-        sigma_bias: List[bool] = True,
+        mu_dropout: Union[float, List[float]] = 0.,
+        sigma_dropout: Union[float, List[float]] = 0.,
+        mu_bias: Union[bool, List[bool]] = True,
+        sigma_bias: Union[bool, List[bool]] = True,
         mu_output_bias: bool = True,
         sigma_output_bias: bool = True,
         mu_n_augment: int = 0,
@@ -36,49 +36,95 @@ class NeuralSDE(BaseSDE):
         brownian_dim: int = 1,
         coef_drift: float = 1.,
         coef_diffusion: float = 1.,
-    ) -> torch.nn.Module:
-        """
-        Parameters
-        ----------
-        state_size: int
-            Input and output state size of the differential equation.
+    ) -> None:
         
-        mu_hidden: Union[List[int], int], default = [2000, 2000]
-            Architecture of the hidden layers of the drift neural network.
+        """NeuralSDE instantiation from parameters are parsed and passed to the base class config function.
         
-        sigma_hidden: Union[List[int], int], default = [400, 400]
-            Architecture of the hidden layers of the diffusion neural network.
+        Args:
+            state_size (int): Input and output state size of the differential equation.
+        
+            mu_hidden (Union[List[int], int]): Architecture of the hidden layers of the drift neural network. **Default**: ``[512, 512]``.
+        
+            sigma_hidden (Union[List[int], int]): Architecture of the hidden layers of the diffusion neural network. **Default**: ``[32, 32]``.
             
-        mu_activation: Union[str, List[str]], default = "LeakyReLU"
+            mu_activation (Union[str, List[str]]): Activation function(s) used in each layer of the drift neural network. If ``len(mu_hidden) > len(mu_activation)``, the remaining activation functions are autofilled using the last value passed. **Default**: ``"LeakyReLU"``.
+            
+            sigma_activation (Union[str, List[str]]): Activation function(s) used in each layer of the diffusion neural network. If ``len(sigma_hidden) > len(sigma_activation)``, the remaining activation functions are autofilled using the last value passed. **Default**: ``"LeakyReLU"``.
+            
+            mu_dropout (Union[float, List[float]]): Description. **Default**: ``0.``.
+            
+            sigma_dropout (Union[float, List[float]]): Description. **Default**: ``0.``.
+            
+            mu_bias (Union[bool, List[bool]]): Description. **Default**: ``True``.
+            
+            sigma_bias (Union[bool, List[bool]]): Description. **Default**: ``True``.
+            
+            mu_output_bias (bool): Description. **Default**: ``True``.
+            
+            sigma_output_bias (bool): Description. **Default**: ``True``.
+            
+            mu_n_augment (int): Description. **Default**: ``0``.
+            
+            sigma_n_augment (int): Description. **Default**: ``0``.
+            
+            sde_type (str): Description. **Default**: ``"ito"``.
+            
+            noise_type (str): Description. **Default**: ``"general"``.
+            
+            brownian_dim (int): Number of diffusion dimensions. **Default**: ``1``.
+            
+            coef_drift (float): Multiplier of drift network output. **Default**: ``1.``.
+            
+            coef_diffusion (float): Multiplier of diffusion network output. **Default**: ``1.``.
         
-        sigma_activation: Union[str, List[str]], default = "LeakyReLU"
-        mu_dropout: Union[float, List[float]], default = 0.2
-        sigma_dropout: Union[float, List[float]], default = 0.2
-        mu_bias: bool, default = True
-        sigma_bias: List[bool], default = True
-        mu_output_bias: bool, default = True
-        sigma_output_bias: bool, default = True
-        mu_n_augment: int, default = 0
-        sigma_n_augment: int, default = 0
-        sde_type: str, default = "ito"
-        noise_type: str, default = "general"
-        brownian_dim: int, default = 1
-        coef_drift: float, default = 1.
-        coef_diffusion: float, default = 1.
+        Returns:
+            None
         
-        Returns
-        -------
-        NeuralSDE: torch.nn.Module
+        Notes:
+            NeuralSDE: torch.nn.Module
+            
+        Example:
         
-        Notes
-        -----
+            .. code-block:: python
+
+                import neural_diffeqs
+                SDE = neural_diffeqs.NeuralSDE(state_size = 50)
         """
         super().__init__()
 
         self.__config__(locals())
 
-    def drift(self, y)->torch.Tensor:
+    def drift(self, y: torch.Tensor) -> torch.Tensor:
+        """Drift function.
+        
+        Args:
+            y (torch.Tensor): input state.
+            
+        Returns:
+            torch.Tensor: drift(y)
+            
+        Example:
+        
+            .. code-block:: python
+            
+                y_hat_f = SDE.drift(y = y)
+        """
         return self.mu(y) * self._coef_drift
 
-    def diffusion(self, y)->torch.Tensor:
+    def diffusion(self, y: torch.Tensor) -> torch.Tensor:
+        """Diffusion function.
+        
+        Args:
+            y (torch.Tensor): input state.
+            
+        Returns:
+            torch.Tensor: diffusion(y)
+            
+            
+        Example:
+        
+            .. code-block:: python
+                
+                y_hat_g = SDE.diffusion(y = y)
+        """
         return self.sigma(y).view(y.shape[0], y.shape[1], self._brownian_dim) * self._coef_diffusion
