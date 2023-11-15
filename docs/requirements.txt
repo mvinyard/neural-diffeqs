@@ -1,4 +1,0 @@
-
-pydata_sphinx_theme
-sphinx-copybutton
-sphinx_panels

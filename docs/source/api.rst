@@ -1,17 +1,29 @@
 
+=============
 API Reference
 =============
 
 The following section contains the API reference for neural-diffeqs.
 
+Neural Stochastic Differential Equations (SDEs)
+===============================================
 
-.. automodule:: neural_diffeqs._neural_sde
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. toctree::
+   :maxdepth: 1
+   :caption: Contents:
+
+   neural_sde
+   potential_sde
+   latent_potential_sde
 
 
-.. automodule:: neural_diffeqs._neural_ode
-    :members:
-    :undoc-members:
-    :show-inheritance:
+Neural Ordinary Differential Equations (ODEs)
+=============================================
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Contents:
+
+   neural_ode
+   potential_ode
+   latent_potential_ode
