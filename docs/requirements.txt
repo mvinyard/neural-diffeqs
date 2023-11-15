@@ -1,0 +1,7 @@
+sphinx
+autodoc
+sphinxcontrib-napoleon
+nbsphinx
+sphinx-copybutton
+sphinx-favicon
+sphinx-design
