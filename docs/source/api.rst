@@ -10,7 +10,7 @@ Neural Stochastic Differential Equations (SDEs)
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Neural SDEs:
 
    neural_sde
    potential_sde
@@ -22,7 +22,7 @@ Neural Ordinary Differential Equations (ODEs)
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Neural ODEs:
 
    neural_ode
    potential_ode

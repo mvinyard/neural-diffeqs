@@ -8,9 +8,8 @@ from .core import BaseODE
 
 
 # -- import standard libraries and define types: -------------------------------
-from typing import Union, List, Any
+from typing import Union, List
 
-NoneType = type(None)
 
 
 # -- Main operational class: ---------------------------------------------------
@@ -22,7 +21,7 @@ class PotentialODE(BaseODE):
         
     def __init__(
         self,
-        state_size,
+        state_size: int,
         dt: float = 0.1,
         coef_diff: float = 0,
         mu_hidden: Union[List[int], int] = [2000, 2000],
@@ -31,21 +30,21 @@ class PotentialODE(BaseODE):
         mu_bias: bool = True,
         mu_output_bias: bool = True,
         mu_n_augment: int = 0,
-    ):
+    ) -> None:
         super().__init__()
         
         mu_potential = True
 
         self.__config__(locals())
 
-    def _potential(self, y):
+    def _potential(self, y:  torch.Tensor):
         return self.mu(y)
 
-    def _gradient(self, ψ, y):
+    def _gradient(self, ψ:  torch.Tensor, y:  torch.Tensor):
         """use-case: output is directly psi (from a potential network)"""
         return torch.autograd.grad(ψ, y, torch.ones_like(ψ), create_graph=True)[0]
 
-    def drift(self, y) -> torch.Tensor:
+    def drift(self, y:  torch.Tensor) -> torch.Tensor:
         y = y.requires_grad_()
         ψ = self._potential(y)
         return self._gradient(ψ, y)

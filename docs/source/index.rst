@@ -1,4 +1,5 @@
 
+============================================
 Welcome to the neural-diffeqs documentation!
 ============================================
 
@@ -9,7 +10,7 @@ Welcome to the neural-diffeqs documentation!
    quickstart
    install
    api
-   
+   examples
 
 * :ref:`genindex`
 * :ref:`modindex`

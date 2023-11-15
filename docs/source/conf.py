@@ -11,6 +11,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
+    'nbsphinx',
 ]
 
 templates_path = ['_templates']
@@ -31,4 +32,4 @@ html_theme_options = {
 }
 
 html_logo = "_static/neural_diffeqs_logo.simple.dark.png"
-html_css_files = ['_static/custom.css']
+# html_css_files = ['_static/custom.css']

@@ -1,7 +1,6 @@
 
 # -- import packages: ----------------------------------------------------------
 import torch
-import ABCParse
 
 
 # -- import local dependencies: ------------------------------------------------
@@ -10,7 +9,6 @@ from .core._base_neural_ode import BaseODE
 
 # -- import standard libraries and define types: -------------------------------
 from typing import Union, List, Any
-NoneType = type(None)
 
 
 # -- Main operational class: ---------------------------------------------------
@@ -27,9 +25,10 @@ class NeuralODE(BaseODE):
         mu_bias: bool = True,
         mu_output_bias: bool = True,
         mu_n_augment: int = 0,
-        sde_type="ito",
-        noise_type="general",
-    ):
+        sde_type: str = "ito",
+        noise_type: str = "general",
+    ) -> None:
+        
         sigma_hidden = []
         sigma_output_bias = False
         brownian_dim = 1
@@ -38,8 +37,10 @@ class NeuralODE(BaseODE):
 
         self.__config__(locals())
 
-    def drift(self, y) -> torch.Tensor:
+    def drift(self, y: torch.Tensor) -> torch.Tensor:
+        """ """
         return self.mu(y)
 
-    def forward(self, t, y):
+    def forward(self, t, y: torch.Tensor) -> torch.Tensor:
+        """ """
         return self.mu(y)
