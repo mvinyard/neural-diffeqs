@@ -2,7 +2,7 @@
 .. title:: neural-diffeqs
 
 
-.. image:: ../assets/neural_diffeqs.logo.png
+.. image:: _static/imgs/neural_diffeqs.logo.png
   :width: 800
   :alt: neural-diffeqs-logo
   :align: left
@@ -34,55 +34,59 @@
     .. grid-item-card::    
        :link: quickstart.rst
        :text-align: right
+       :img-background: _static/imgs/neural_diffeqs.simple_logo.blur.purple.png
        
        Quickstart
        ^^^
        
        .. raw:: html
 
-          <embed><div><br></br><br></br></div></embed>
+          <embed><div><br></br></div></embed>
 
-       :octicon:`flame;2em;sd-text-dark`
+       :octicon:`flame;4em;sd-text-dark`
 
        
     .. grid-item-card::
        :link: install.rst
        :text-align: right
+       :img-background: _static/imgs/neural_diffeqs.simple_logo.blur.blue.png
        
        Installation
        ^^^
        
        .. raw:: html
 
-          <embed><div><br></br><br></br></div></embed>
+          <embed><div><br></br></div></embed>
 
-       :octicon:`desktop-download;2em;sd-text-dark`
+       :octicon:`desktop-download;4em;sd-text-dark`
     
     .. grid-item-card::
        :link: api.rst
        :text-align: right
+       :img-background: _static/imgs/neural_diffeqs.simple_logo.blur.orange.png
        
        API Reference
        ^^^
        
        .. raw:: html
 
-          <embed><div><br></br><br></br></div></embed>
+          <embed><div><br></br></div></embed>
 
-       :octicon:`code;2em;sd-text-dark`
+       :octicon:`code;4em;sd-text-dark`
        
     .. grid-item-card::
        :link: examples.rst
        :text-align: right
+       :img-background: _static/imgs/neural_diffeqs.simple_logo.blur.red.png
        
        Examples
        ^^^
        
        .. raw:: html
 
-          <embed><div><br></br><br></br></div></embed>
+          <embed><div><br></br></div></embed>
 
-       :octicon:`sidebar-expand;2em;sd-text-dark`
+       :octicon:`sidebar-expand;4em;sd-text-dark`
 
 .. raw:: html
 
