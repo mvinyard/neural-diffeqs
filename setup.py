@@ -1,13 +1,22 @@
-
+# -- import packages: ---------------------------------------------------------
 import setuptools
 import re
 import os
 import sys
 
 
+# -- fetch requirements packages: ---------------------------------------------
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
+with open('neural_diffeqs/__version__.py') as v:
+    exec(v.read())
+
+
+# -- run setup: ---------------------------------------------------------------
 setuptools.setup(
     name="neural-diffeqs",
-    version="0.3.2",
+    version=__version__,
     python_requires=">3.9.0",
     author="Michael E. Vinyard",
     author_email="mvinyard@broadinstitute.org",
@@ -16,12 +25,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     description="Neural differential equations made easy.",
     packages=setuptools.find_packages(),
-    install_requires=[
-        "numpy==1.22.4",
-        "torch>=2.0.0",
-        "torch-nets>=0.0.4",
-        "torchsde>=0.2.5",
-    ],
+    install_requires=requirements,
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python :: 3.9",
