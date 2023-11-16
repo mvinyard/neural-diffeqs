@@ -9,7 +9,7 @@ import sys
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
-with open('scdiffeq/__version__.py') as v:
+with open('neural_diffeqs/__version__.py') as v:
     exec(v.read())
 
 
