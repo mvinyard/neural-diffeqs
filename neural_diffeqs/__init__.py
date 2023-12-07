@@ -14,3 +14,5 @@ from ._potential_sde import PotentialSDE
 from ._potential_ode import PotentialODE
 from ._latent_potential_ode import LatentPotentialODE
 from ._latent_potential_sde import LatentPotentialSDE
+
+from ._residual_neural_sde import ResidualNeuralSDE
