@@ -1,4 +1,3 @@
-
 # -- import packages: ----------------------------------------------------------
 import torch
 
@@ -23,13 +22,52 @@ class Potential(torch.nn.Sequential):
         self.add_module("psi", torch.nn.Linear(state_size, 1, bias=False))
 
     def gradient(self, ψ, y):
-        """use-case: output is directly psi (from a potential network)"""
+        """
+        Compute the gradient of ψ with respect to y.
+        
+        Parameters:
+        -----------
+        ψ : torch.Tensor
+            The potential value, typically output from a potential network.
+        y : torch.Tensor
+            The input tensor with respect to which the gradient is computed.
+            
+        Returns:
+        --------
+        torch.Tensor
+            The gradient of ψ with respect to y.
+        """
         return torch.autograd.grad(ψ, y, torch.ones_like(ψ), create_graph=True)[0]
 
     def potential_gradient(self, y):
-        """in this use-case, y is likely the output of a neural network"""
+        """
+        Compute the gradient of the potential with respect to the input.
+        
+        Parameters:
+        -----------
+        y : torch.Tensor
+            Input tensor, typically the output of a neural network.
+            
+        Returns:
+        --------
+        torch.Tensor
+            The gradient of the potential with respect to y.
+        """
         y = y.requires_grad_()
         return self.gradient(self.psi(y), y)
     
-    def __call__(self, y:torch.Tensor)->torch.Tensor:
+    def __call__(self, y: torch.Tensor) -> torch.Tensor:
+        """
+        Apply the potential transformation to the input tensor.
+        
+        Parameters:
+        -----------
+        y : torch.Tensor
+            Input tensor to transform into a potential value.
+            
+        Returns:
+        --------
+        torch.Tensor
+            A 1-dimensional potential value.
+        """
         return self.psi(y.requires_grad_())

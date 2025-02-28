@@ -6,13 +6,12 @@ from abc import abstractmethod
 
 # from ._base_neural_diffeq import BaseDiffEq
 from ._base_neural_ode import BaseODE
-from ._diffeq_config import DiffEqConfig
 
 
 class BaseLatentODE(BaseODE):
     DIFFEQ_TYPE = "ODE"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__()
 
         """
