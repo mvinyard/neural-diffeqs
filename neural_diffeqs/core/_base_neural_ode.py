@@ -1,17 +1,20 @@
-
-import torch
+# -- import packages: ---------------------------------------------------------
+import abc
 import ABCParse
-from abc import abstractmethod
+import torch
 
-from typing import List
-
+# -- import local dependencies: -----------------------------------------------
 from ._base_neural_diffeq import BaseDiffEq
 from ._diffeq_config import DiffEqConfig
 
+# -- set type hints: ----------------------------------------------------------
+from typing import List
+
+# -- operational cls: ---------------------------------------------------------
 class BaseODE(BaseDiffEq):
     DIFFEQ_TYPE = "ODE"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__()
 
         """
@@ -23,7 +26,7 @@ class BaseODE(BaseDiffEq):
         of the inheriting class.        
         """
 
-    def __config__(self, kwargs, private: List[str] = ["coef_diff", "dt"]):
+    def __config__(self, kwargs: dict, private: List[str] = ["coef_diff", "dt"]) -> None:
         """Sets up mu and sigma given params"""
 
         self.__parse__(kwargs=kwargs, private=private, public = ['noise_type', 'sde_type'])
@@ -45,7 +48,7 @@ class BaseODE(BaseDiffEq):
         return list(self.parameters())[0].device
 
     # -- required methods in child classes: ------------------------------------
-    @abstractmethod
+    @abc.abstractmethod
     def drift(self):
         """Called by self.f and/or self.forward"""
         ...

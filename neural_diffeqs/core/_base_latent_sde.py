@@ -1,9 +1,9 @@
-
+# -- import packages: ---------------------------------------------------------
 import torch
 import ABCParse
-from abc import abstractmethod
+import abc
 
-
+# -- import local dependencies: -----------------------------------------------
 from ._base_neural_diffeq import BaseDiffEq
 from ._diffeq_config import DiffEqConfig
 
@@ -11,7 +11,7 @@ from ._diffeq_config import DiffEqConfig
 class BaseLatentSDE(BaseDiffEq):
     DIFFEQ_TYPE = "SDE"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__()
 
         """
@@ -21,7 +21,7 @@ class BaseLatentSDE(BaseDiffEq):
         
         """
 
-    def __config__(self, kwargs):
+    def __config__(self, kwargs: dict) -> None:
         """Sets up mu and sigma given params"""
 
         self.__parse__(kwargs=kwargs, public = ['noise_type', 'sde_type'])
@@ -33,21 +33,21 @@ class BaseLatentSDE(BaseDiffEq):
         self.sigma = configs.sigma
 
     # -- required methods in child classes: ------------------------------------
-    @abstractmethod
+    @abc.abstractmethod
     def drift(self):
         """Called by self.f"""
         ...
 
-    @abstractmethod
+    @abc.abstractmethod
     def diffusion(self):
         """Called by self.g"""
         ...
-        
-    @abstractmethod
+
+    @abc.abstractmethod
     def prior_drift(self):
         """Called by self.h"""
         ...
-        
+
     def h(self, t: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         """Should return the output of self.diffusion"""
         return self.prior_drift(y)

@@ -1,4 +1,3 @@
-
 # -- import packages: ---------------------------------------------------------
 import torch
 import ABCParse
@@ -14,6 +13,21 @@ from typing import Union, List, Any
 
 # -- Main operational class: --------------------------------------------------
 class NeuralSDE(BaseSDE):
+    """
+    Neural Stochastic Differential Equation (Neural SDE) implementation.
+    
+    This class implements a neural network-based SDE solver where both the drift and 
+    diffusion functions are parameterized by neural networks. This allows for flexible 
+    modeling of continuous-time stochastic dynamical systems.
+    
+    Neural SDEs extend Neural ODEs by incorporating stochasticity, making them suitable
+    for modeling systems with inherent randomness or uncertainty. They can be used for
+    various tasks including stochastic time series modeling, generative modeling, and
+    uncertainty quantification.
+    
+    The implementation supports both Itô and Stratonovich interpretations of SDEs, as well
+    as different noise types.
+    """
     DIFFEQ_TYPE = "SDE"
     """NeuralSDE - a neural differential equation."""
     def __init__(
@@ -51,25 +65,25 @@ class NeuralSDE(BaseSDE):
             
             sigma_activation (Union[str, List[str]]): Activation function(s) used in each layer of the diffusion neural network. If ``len(sigma_hidden) > len(sigma_activation)``, the remaining activation functions are autofilled using the last value passed. **Default**: ``"LeakyReLU"``.
             
-            mu_dropout (Union[float, List[float]]): Description. **Default**: ``0.``.
+            mu_dropout (Union[float, List[float]]): Dropout rate(s) for the drift neural network. Can be a single float or a list of floats for different dropout rates per layer. **Default**: ``0.``.
             
-            sigma_dropout (Union[float, List[float]]): Description. **Default**: ``0.``.
+            sigma_dropout (Union[float, List[float]]): Dropout rate(s) for the diffusion neural network. Can be a single float or a list of floats for different dropout rates per layer. **Default**: ``0.``.
             
-            mu_bias (Union[bool, List[bool]]): Description. **Default**: ``True``.
+            mu_bias (Union[bool, List[bool]]): Whether to include bias terms in the drift network layers. Can be a single boolean or a list of booleans for different settings per layer. **Default**: ``True``.
             
-            sigma_bias (Union[bool, List[bool]]): Description. **Default**: ``True``.
+            sigma_bias (Union[bool, List[bool]]): Whether to include bias terms in the diffusion network layers. Can be a single boolean or a list of booleans for different settings per layer. **Default**: ``True``.
             
-            mu_output_bias (bool): Description. **Default**: ``True``.
+            mu_output_bias (bool): Whether to include a bias term in the output layer of the drift network. **Default**: ``True``.
             
-            sigma_output_bias (bool): Description. **Default**: ``True``.
+            sigma_output_bias (bool): Whether to include a bias term in the output layer of the diffusion network. **Default**: ``True``.
             
-            mu_n_augment (int): Description. **Default**: ``0``.
+            mu_n_augment (int): Number of augmented dimensions to add to the state for the drift network. Augmentation can help with expressivity of the model. **Default**: ``0``.
             
-            sigma_n_augment (int): Description. **Default**: ``0``.
+            sigma_n_augment (int): Number of augmented dimensions to add to the state for the diffusion network. Augmentation can help with expressivity of the model. **Default**: ``0``.
             
-            sde_type (str): Description. **Default**: ``"ito"``.
+            sde_type (str): Type of stochastic differential equation interpretation. Options are "ito" or "stratonovich". **Default**: ``"ito"``.
             
-            noise_type (str): Description. **Default**: ``"general"``.
+            noise_type (str): Type of noise model. Options include "general", "diagonal", and "scalar". **Default**: ``"general"``.
             
             brownian_dim (int): Number of diffusion dimensions. **Default**: ``1``.
             

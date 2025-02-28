@@ -1,8 +1,5 @@
 # -- import packages: ---------------------------------------------------------
 import setuptools
-import re
-import os
-import sys
 
 
 # -- fetch requirements packages: ---------------------------------------------
